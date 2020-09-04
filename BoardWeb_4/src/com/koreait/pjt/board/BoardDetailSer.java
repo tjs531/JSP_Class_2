@@ -62,7 +62,9 @@ public class BoardDetailSer extends HttpServlet {
 		//댓글 리스트
 		request.setAttribute("cmtlist", BoardCmtDAO.selCmtList(vo));
 		//like누른사람 리스트
-		request.setAttribute("likelist", BoardDAO.selLikeList(vo,"like"));
+		//request.setAttribute("likelist", BoardDAO.selLikeList(vo,"like"));
+		
+		request.setAttribute("likelist", BoardDAO.selBoardLikeList(vo.getI_board()));
 		request.setAttribute("vo", BoardDAO.selDetail(vo));
 		ViewResolver.forwardLoginChk("board/detail", request, response);
 	}
