@@ -264,12 +264,11 @@ public class BoardDAO {
 	}
 	
 	//like 누른사람 리스트
-	public static List<UserVO> selLikeList(BoardVO vo,String likeorhate) {
-		//String sql = "Select B.nm, B.profile_img from t_board4_like A, t_user B where A.i_user = B.i_user and A.i_board=?";
+/*	public static List<BoardVO> selLikeList(BoardVO vo,String likeorhate) {
 		
 		String sql = "Select B.nm, B.profile_img from t_board4_"+likeorhate+" A, t_user B where A.i_user = B.i_user and A.i_board=?";
 		
-		final List<UserVO> list = new ArrayList<UserVO>();
+		final List<BoardVO> list = new ArrayList<BoardVO>();
 		
 		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 
@@ -283,7 +282,7 @@ public class BoardDAO {
 				while(rs.next()) {
 					String nm = rs.getNString("nm");
 					String img = rs.getNString("profile_img");
-					UserVO vo = new UserVO();
+					BoardVO vo = new BoardVO();
 					vo.setNm(nm);
 					vo.setProfile_img(img);
 					
@@ -294,7 +293,39 @@ public class BoardDAO {
 		});
 		
 		return list;
+	}*/
+	
+	public static List<BoardVO> selBoardLikeList(final int i_board) {
+		
+		String sql = " Select b.i_user, b.nm, b.profile_img from t_board4_like a inner join t_user B on a.i_user = b.i_user where a.i_board=? order by a.r_dt asc ";
+		
+		final List<BoardVO> list = new ArrayList<BoardVO>();
+		
+		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException { 
+				ps.setInt(1, i_board);
+			}
+
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				while(rs.next()) {
+					BoardVO vo = new BoardVO();
+					vo.setI_user(rs.getInt("i_user"));
+					vo.setNm(rs.getNString("nm"));
+					vo.setProfile_img(rs.getNString("profile_img"));
+
+					
+					list.add(vo);
+				}
+				return 1;
+			}
+		});
+		
+		return list;
 	}
+	
 	
 	////////////////////////paging///////////////////////////
 	
