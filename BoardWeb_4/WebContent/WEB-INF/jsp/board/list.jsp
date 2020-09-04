@@ -32,6 +32,21 @@
 	.profile img {width:40px; border-radius:50%; }
 	.profile {display:inline-block;}
 	.highlight {color:red;}
+	
+	.likeListContainer {
+		display: flex;
+		width: 100%;
+	}
+	
+	.likeListContainer .nm {
+		background-color: white !important;
+		margin-left: 7px;
+		font-size: 0.7em;
+		display: flex;
+		align-items: center;
+	}
+	
+	
 </style>
 </head>
 <body>
@@ -77,28 +92,28 @@
 			<!-- 	<th class="date">작성일자</th>  -->
 			</tr>
 			<c:forEach items="${list}" var ="item">
-			<tr class="itemRow" onclick="todetail(${item.i_board})">
-				<td class="i_board">${item.i_board}</td>
-				<td class="title">${item.title}	 	${item.c_cmt==0? '' : [item.c_cmt]}</td>
-			<!-- <td>${item.i_user}</td> -->
-				
-				<td class="i_user">
-				<div class="profile">
-				<c:choose>
-					<c:when test="${item.profile_img != null}">
-						<img class="pImg" src="/img/user/${item.i_user}/${item.profile_img }">
-					</c:when>
-					<c:otherwise>
-						<img class="pImg" src="/img/default_profile.JPG">
-					</c:otherwise>
-				</c:choose></div>
-				${item.nm }</td>	
-				<td class="hits">${item.hits}</td>
-				<td class="like">${item.c_like}
-				${item.yn_like == 0 ? '♡' : '❤' }
+				<tr class="itemRow" >
+					<td class="i_board" onclick="todetail(${item.i_board})">${item.i_board}</td>
+					<td class="title" onclick="todetail(${item.i_board})">${item.title}	 	${item.c_cmt==0? '' : [item.c_cmt]}</td>
+				<!-- <td>${item.i_user}</td> -->
+					
+					<td class="i_user">
+					<div class="profile">
+					<c:choose>
+						<c:when test="${item.profile_img != null}">
+							<img class="pImg" src="/img/user/${item.i_user}/${item.profile_img }">
+						</c:when>
+						<c:otherwise>
+							<img class="pImg" src="/img/default_profile.JPG">
+						</c:otherwise>
+					</c:choose></div>
+					${item.nm }</td>	
+					<td class="hits">${item.hits}</td>
+					<td class="like"><span onclick="getLikeList(${item.i_board},${item.c_like})">${item.c_like}	</span>
+					${item.yn_like == 0 ? '♡' : '❤' }
 				</td>
-			<!-- 	<td class="date">${item.r_dt}</td> -->
-			</tr>
+				<!-- 	<td class="date">${item.r_dt}</td> -->
+				</tr>
 			</c:forEach>
 		</table>
 		
@@ -108,6 +123,8 @@
 				<span><a href="/board/list?page=${i}&record_cnt=${param.record_cnt}&searchText=${param.searchText}" id="${i==page ? 'c_page' : 'page'}" >${i}</a></span>
 			</c:forEach>
 			
+			<div id="likeListContainer">
+			</div>
 			
 			<div id="search">
 			<form action="/board/list">
@@ -124,12 +141,56 @@
 		</div>
 	</div>
 	
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script>
+
+		//var beforeI_board = 0;	
 	
+		function getLikeList(i_board,cnt){
+		
+			likeListContainer.innerHTML = ""
+			
+			if(cnt == 0 ) {return;}
+			console.log(i_board);
+			
+			//get 방식. (post방식으로 날릴수도 있음.) // 'board/like?i_board=i_board'형식으로 보낼 수도 있음
+			axios.get('/board/like',{
+				params : {
+					'i_board' : i_board					//key와 value 값이 같을 경우 (ex> 'i_board': i_board  -> i_board 만 써도 됨.)
+				}
+			}).then(function(res) {
+				if(res.data.length >0) {
+					for(let i=0; i<res.data.length; i++){
+						const result = makeLikeUser(res.data[i])
+						likeListContainer.innerHTML += result;
+					}
+				}
+			})
+		}
+		
+		function makeLikeUser(one){
+				
+			const img = one.profile_img == null ? '<img class="pImg" src="/img/default_profile.jpg">' : 
+				`<img class="pImg" src="/img/user/\${one.i_user}/\${one.profile_img}">`
+			
+			const ele = 
+			`<div class="likeListContainer">
+				<div class="profileContainer">
+					<div class="profile">
+						\${img}
+					</div>
+				</div>
+				<div class="nm">\${one.nm}</div>
+			</div>`
+			
+			return ele
+		}
+		
 		function click(){
 			menu.style = 'color:red';
 			
 		}
+		
 		function todetail(i_board){
 			location.href='/board/detail?i_board=' + i_board + '&page=${page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&searchType=${searchType}';
 		}
