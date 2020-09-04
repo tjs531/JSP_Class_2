@@ -12,11 +12,6 @@
 	href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
 	integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc"
 	crossorigin="anonymous">
-	
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
-  />
 <style>
 .container {
 	text-align: center;
@@ -104,16 +99,22 @@ a {
 } 
 
 #likeListContainer {
-	display : none;
+	opacity: 0;
+	transition-duration : 500ms;
 }
 
+
+#likeListContainer img {width:40px; border-radius:50%;}
+
+
 #id_like:hover #likeListContainer{
-	display: unset;
+	opacity:1;
 }
 
 .like_hate_btn {
 	list-style-type:none;
 }
+
 .cmt {margin: 30px;}
 .cmt table {margin:10px auto;}
 .cmt th, td {padding-left:30px; height:25px;}
@@ -132,7 +133,7 @@ a {
 			<div id="title">${vo.title}</div>
 			<div class="sub">
 				<div id="nm">
-				<c:choose>
+					<c:choose>
 							<c:when test="${vo.profile_img != null}">
 								<img class="pImg" src="/img/user/${vo.i_user}/${vo.profile_img }">
 							</c:when>
@@ -154,24 +155,26 @@ a {
 					</c:if>
 					<!--  ${likelist.size() }-->
 					<c:if test="${vo.c_like != 0}">
-						<span class="pointCursor" id="id_like" onclick="print_likelist()">${vo.c_like } <br>
+						<span class="pointCursor" id="id_like">${vo.c_like }
 						
 						<div id="likeListContainer">
 							<c:forEach items="${likelist}" var="like">
+								<c:choose>
+									<c:when test="${like.profile_img != null}">
+										<img class="pImg" src="/img/user/${like.i_user}/${like.profile_img }">
+									</c:when>
+									<c:otherwise>
+										<img class="pImg" src="/img/default_profile.JPG">
+									</c:otherwise>
+								</c:choose>
 								${like.nm} 
 							</c:forEach>
-						<!--	<c:if test="${likelist.size() != 0}">
-								님이 좋아합니다.
-							</c:if>  -->
 						</div>
 						</span>
 					</c:if>
 					
 				</div>
 				
-				
-
-			
 			<div id="ctnt">${vo.ctnt}</div>
 
 		</div>
