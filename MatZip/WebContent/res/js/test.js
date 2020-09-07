@@ -1,0 +1,3 @@
+function ddd(){
+	alter('ddd');
+}
