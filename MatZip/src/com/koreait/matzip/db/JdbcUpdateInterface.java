@@ -3,6 +3,6 @@ package com.koreait.matzip.db;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public interface JdbcUpdateInterface {			//ì¸í„°í˜ì´ìŠ¤, ì¶”ìƒí´ë˜ìŠ¤ëŠ” ë¶€ëª¨ì—­í• ë§Œ í•œë‹¤.(ìì‹ì„ ê°€ë¦¬í‚¬ë•Œë§Œ ì‚¬ìš©ëœë‹¤. ê°ì²´í™” ì•ˆë¨)
-	void update(PreparedStatement ps) throws SQLException ; 		//public abstract í‚¤ì›Œë“œëŠ” ìƒëµí•´ë„ ìë™ìœ¼ë¡œ ë„£ì–´ì§„ë‹¤.(abstract : ì¶”ìƒë©”ì†Œë“œ)
+public interface JdbcUpdateInterface {			//ÀÎÅÍÆäÀÌ½º, Ãß»óÅ¬·¡½º´Â ºÎ¸ğ¿ªÇÒ¸¸ ÇÑ´Ù.(ÀÚ½ÄÀ» °¡¸®Å³¶§¸¸ »ç¿ëµÈ´Ù. °´Ã¼È­ ¾ÈµÊ)
+	void update(PreparedStatement ps) throws SQLException ; 		//public abstract Å°¿öµå´Â »ı·«ÇØµµ ÀÚµ¿À¸·Î ³Ö¾îÁø´Ù.(abstract : Ãß»ó¸Ş¼Òµå)
 }

@@ -22,27 +22,27 @@ public class UserController {
 		if(error != null) {
 			switch(error) {
 			case "2":
-				request.setAttribute("msg", "ì•„ì´ë”” ì—†ìŒ");
+				request.setAttribute("msg", "¾ÆÀÌµğ ¾øÀ½");
 				break;
 			case "3":
-				request.setAttribute("msg", "ë¹„ë°€ë²ˆí˜¸ í‹€ë¦¼");
+				request.setAttribute("msg", "ºñ¹Ğ¹øÈ£ Æ²¸²");
 				break;
 			}
 		}
-		request.setAttribute(Const.TITLE, "ë¡œê·¸ì¸");
+		request.setAttribute(Const.TITLE, "·Î±×ÀÎ");
 		request.setAttribute(Const.VIEW, "user/login");
 		return ViewRef.TEMP_DEFAULT;
 	}
 	
 	public String join(HttpServletRequest request) {
-		request.setAttribute(Const.TITLE, "íšŒì›ê°€ì…");
+		request.setAttribute(Const.TITLE, "È¸¿ø°¡ÀÔ");
 		request.setAttribute(Const.VIEW, "user/join");
 		return ViewRef.TEMP_DEFAULT;
 	}
 	
 	public String joinProc(HttpServletRequest request) {
 		String user_id = request.getParameter("user_id");
-		String user_pw = request.getParameter("user_pw");				//ì•”í˜¸í™” ì‹œì¼œì•¼í•¨
+		String user_pw = request.getParameter("user_pw");				//¾ÏÈ£È­ ½ÃÄÑ¾ßÇÔ
 		String nm = request.getParameter("nm");
 		
 		UserVO param = new UserVO();

@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 
 public class JdbcTemplate {
 	
-	//select에 쓸 메소드
+	//select�� �� �޼ҵ�
 	public static void executeQuery(String sql, JdbcSelectInterface jdbc) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -24,7 +24,7 @@ public class JdbcTemplate {
 		}
 	}
 	
-	//insert, update, delete에 쓸 메소드
+	//insert, update, delete
 	public static int executeUpdate(String sql,JdbcUpdateInterface jdbc) {
 		int result = 0;
 		Connection con = null;

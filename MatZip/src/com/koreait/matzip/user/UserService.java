@@ -22,7 +22,7 @@ public class UserService {
 		return dao.join(param);
 	}
 	
-	//result (1):ë¡œê·¸ì¸ ì„±ê³µ (2):ì•„ì´ë”” ì—†ìŒ (3):ë¹„ë°€ë²ˆí˜¸ í‹€ë¦¼ 
+	//result (1):·Î±×ÀÎ ¼º°ø (2):¾ÆÀÌµğ ¾øÀ½ (3):ºñ¹Ğ¹øÈ£ Æ²¸² 
 	public int login(UserVO param) {
 		int result=0;
 		

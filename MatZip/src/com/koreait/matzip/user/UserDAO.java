@@ -26,7 +26,7 @@ public class UserDAO {
 		});
 	}
 	
-	public UserVO selUser(UserVO param) {		//i_userë¡œë„, user_idë¡œë„ ê°€ì ¸ì˜¬ ìˆ˜ ìˆê²Œ
+	public UserVO selUser(UserVO param) {		//i_user·Îµµ, user_id·Îµµ °¡Á®¿Ã ¼ö ÀÖ°Ô
 		UserVO result = new UserVO();
 		
 		String sql = "Select i_user, user_id, user_pw, nm, salt, profile_img, r_dt "
