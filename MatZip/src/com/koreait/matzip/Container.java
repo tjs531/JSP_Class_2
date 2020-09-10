@@ -29,6 +29,15 @@ public class Container extends HttpServlet {
 	
 	private void proc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		//로그인 체크
+		String routerCheckResult = LoginChkInterceptor.routerChk(request);
+		
+		if(routerCheckResult != null) {
+			response.sendRedirect(routerCheckResult);
+			return;
+		}
+		
+		
 		String temp = mapper.nav(request);
 		
 		if(temp.indexOf(":") >= 0) {

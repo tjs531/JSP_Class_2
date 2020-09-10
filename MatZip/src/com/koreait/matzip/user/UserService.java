@@ -28,15 +28,21 @@ public class UserService {
 		
 		UserVO dbResult = dao.selUser(param);
 		
-		
-		if(dbResult.getI_user() == 0){
+		if(dbResult.getI_user() == 0) {
 			result= 2;
-		}else {
+		} else {
 			String pw = param.getUser_pw();
 			String encryptPw = SecurityUtils.getEncrypt(pw, dbResult.getSalt());
-			if(encryptPw.equals(dbResult.getUser_pw())){
+			
+			if(encryptPw.equals(dbResult.getUser_pw())) {			//로그인 성공
+				param.setUser_pw(null);												//param에 비밀번호 지워주고 원하는 값 넣어주기.
+				param.setI_user(dbResult.getI_user());
+				param.setNm(dbResult.getNm());
+				param.setProfile_img(dbResult.getProfile_img());
+				
+				//param = dbResult;													이렇게 하면 절대 안됨. 안됨.안됨. 보내는 param과 매개변수의 param은 주소만 같을 뿐 엄연히 다른 놈.
 				result= 1;
-			}else {
+			} else {
 				result =3;
 			}
 		}
