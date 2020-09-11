@@ -22,6 +22,7 @@ public class HandlerMapper {
 		}
 		
 		switch(uriArr[1]){
+		
 			case ViewRef.URI_USER:
 				switch(uriArr[2]) {
 					case "login":
@@ -37,12 +38,19 @@ public class HandlerMapper {
 					case "logout":
 						return userCon.logout(request);
 				}
+				
 			case ViewRef.URI_RESTAURANT:
 				switch(uriArr[2]) {
 				case "restMap":
 					return restCon.restMap(request);
+				case "restReg":
+					return restCon.restReg(request);
+				case "restRegProc":
+					return restCon.restRegProc(request);
+				case "ajaxGetList" :
+					return restCon.ajaxGetList(request);
 				}
-				
+			
 		}
 		
 		return "404";				//not found
