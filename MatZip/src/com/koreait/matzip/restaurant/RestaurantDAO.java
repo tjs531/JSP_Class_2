@@ -58,4 +58,48 @@ public class RestaurantDAO {
 		
 		return list;
 	}
+	
+	
+	public RestaurantDomain selRest(RestaurantVO param) {
+	
+		RestaurantDomain vo = new RestaurantDomain();
+		
+		String sql = " SELECT a.i_rest, a.nm, a.addr, a.i_user, a.hits, b.val AS cd_category_nm, "
+				+ " IFNULL(c.cnt, 0) AS cntFavorite " 
+				+ " FROM t_restaurant A "
+				+ " LEFT JOIN c_code_d B "
+				+ " ON a.cd_category = b.cd AND b.i_m =1 "
+				+ " LEFT JOIN ( " 
+				+ " SELECT i_rest, COUNT(i_rest) AS cnt "
+				+ " FROM t_user_favorite " 
+				+ " WHERE i_rest = ?  GROUP BY i_rest "
+				+ " ) C " 
+				+ " ON a.i_rest = c.i_rest " 
+				+ " WHERE a.i_rest = ? ";
+		
+		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getI_rest());
+				ps.setInt(2, param.getI_rest());
+			}
+
+			@Override
+			public void executeQuery(ResultSet rs) throws SQLException {
+				while(rs.next()) {
+					vo.setI_rest(param.getI_rest());
+					vo.setNm(rs.getNString("nm"));
+					vo.setAddr(rs.getNString("addr"));
+					vo.setI_user(rs.getInt("i_user"));
+					vo.setCntHits(rs.getInt("hits"));
+					vo.setCd_category_nm(rs.getNString("cd_category_nm"));
+					vo.setCntFavorite(rs.getInt("cntFavorite"));
+				}
+			}
+		});
+		
+		return vo;
+	}
+	
 }
