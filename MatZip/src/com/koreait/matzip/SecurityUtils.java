@@ -11,6 +11,10 @@ import com.koreait.matzip.vo.UserVO;
 
 public class SecurityUtils {
 
+	public static int getLoginUserPk(HttpServletRequest request) {
+		return getLoginUser(request).getI_user();
+	}
+
 	public static String getEncrypt(String source, String salt) {
 		return getEncrypt(source, salt.getBytes());
 	}

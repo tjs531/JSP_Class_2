@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import com.google.gson.Gson;
 import com.koreait.matzip.CommonUtils;
 import com.koreait.matzip.FileUtils;
 import com.koreait.matzip.vo.RestaurantDomain;
+import com.koreait.matzip.vo.RestaurantMenuVO;
 import com.koreait.matzip.vo.RestaurantRecommendMenuVO;
 import com.koreait.matzip.vo.RestaurantVO;
 import com.oreilly.servlet.MultipartRequest;
@@ -20,29 +22,61 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 public class RestaurantService {
 	
-	private RestaurantDAO dao;
-		
+private RestaurantDAO dao;
+	
 	public RestaurantService() {
 		dao = new RestaurantDAO();
 	}
 	
-	public int restReg(RestaurantVO param) {
+	public int restReg(RestaurantVO param) {		
 		return dao.insRestaurant(param);
 	}
 	
-	public String getRestList(){
+	public String getRestList() {
 		List<RestaurantDomain> list = dao.selRestList();
 		Gson gson = new Gson();
-		
 		return gson.toJson(list);
 	}
 	
-public int addRecMenus(HttpServletRequest request) {
+	public RestaurantDomain getRest(RestaurantVO param) {
+		return dao.selRest(param);
+	}
+	
+	public int addMenus(HttpServletRequest request) { //메뉴 
+		int i_rest = CommonUtils.getIntParameter("i_rest", request);
+		System.out.println("i_rest : " + i_rest);
 		
-		String savePath = "/res/img/restaurant";								//상대주소값
-		String tempPath = request.getServletContext().getRealPath(savePath + "/temp");					//임시로 이미지 넣는 공간.
-																																														//.getRealPath() : 이 프로그램이 돌아가고 있는 절대주소값 뒤에 ()안에 있는 savePath/temp를 덧붙여줌
-																																														//   '\'는 윈도우에서만 쓸 수 있음. 윈도우에서는 둘 다, 리눅스에서는 /만 쓸 수 있으므로 / 쓰는게 낫다..
+		String targetPath = request.getServletContext().getRealPath("/res/img/restaurant/" + i_rest + "/menu");
+		FileUtils.makeFolder(targetPath);
+		
+		RestaurantRecommendMenuVO param = new RestaurantRecommendMenuVO();
+		param.setI_rest(i_rest);
+		
+        try {
+        	for (Part part : request.getParts()) {
+                String fileNm = part.getSubmittedFileName();
+                System.out.println("fileNm : " + fileNm);
+                
+                if(fileNm != null) {
+                	String ext = FileUtils.getExt(fileNm);
+                	String saveFileNm = UUID.randomUUID() + ext;                
+                	part.write(targetPath + "/" + saveFileNm); //파일 저장
+                	
+                	param.setMenu_pic(saveFileNm);
+                	dao.insMenu(param);
+                }
+            }      
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
+        
+		return i_rest;
+	}
+	
+	public int addRecMenus(HttpServletRequest request) { //추천메뉴
+		
+		String savePath = request.getServletContext().getRealPath("/res/img/restaurant");
+		String tempPath = savePath + "/temp";//임시	
 		FileUtils.makeFolder(tempPath);
 		
 		int maxFileSize = 10_485_760; //1024 * 1024 * 10 (10mb) //최대 파일 사이즈 크기
@@ -59,8 +93,8 @@ public int addRecMenus(HttpServletRequest request) {
 			System.out.println("i_rest : " + i_rest);
 			menu_nmArr = multi.getParameterValues("menu_nm");
 			menu_priceArr = multi.getParameterValues("menu_price");
-						 
-			if(menu_nmArr== null && menu_priceArr == null) {	
+			
+			if(menu_nmArr == null || menu_priceArr == null) {
 				return i_rest;
 			}
 			
@@ -71,26 +105,26 @@ public int addRecMenus(HttpServletRequest request) {
 				vo.setMenu_nm(menu_nmArr[i]);
 				vo.setMenu_price(CommonUtils.parseStringToInt(menu_priceArr[i]));
 				list.add(vo);
-			}	
-						
-			String targetPath = request.getServletContext().getRealPath(savePath + "/" + i_rest);
+			}		
+			
+			String targetPath = savePath + "/" + i_rest;
 			FileUtils.makeFolder(targetPath);
 			
-			String fileNm = "";
-			String saveFileNm = "";
+			String originFileNm = "";
+			
 			Enumeration files = multi.getFileNames();
 			while(files.hasMoreElements()) {		
 				String key = (String)files.nextElement();
 				System.out.println("key : " + key);
-				fileNm = multi.getFilesystemName(key);
-				System.out.println("fileNm : " + fileNm);
+				originFileNm = multi.getFilesystemName(key);
+				System.out.println("fileNm : " + originFileNm);
 				
-				if(fileNm != null) {
-					String ext = FileUtils.getExt(fileNm);
-					saveFileNm = UUID.randomUUID() + ext;
+				if(originFileNm != null) { //파일 선택을 안 했으면 null이 넘어옴
+					String ext = FileUtils.getExt(originFileNm);
+					String saveFileNm = UUID.randomUUID() + ext;
 					
 					System.out.println("saveFileNm : " + saveFileNm);				
-					File oldFile = new File(tempPath + "/" + fileNm);
+					File oldFile = new File(tempPath + "/" + originFileNm);
 				    File newFile = new File(targetPath + "/" + saveFileNm);
 				    oldFile.renameTo(newFile);	
 				    
@@ -111,17 +145,16 @@ public int addRecMenus(HttpServletRequest request) {
 		
 		return i_rest;
 	}
-
+	
 	public List<RestaurantRecommendMenuVO> getRecommendMenuList(int i_rest) {
-			return dao.selRecommendMenuList(i_rest);
-		}
-
-	public RestaurantDomain getRest(RestaurantVO param) {
-		return dao.selRest(param);
+		return dao.selRecommendMenuList(i_rest);
+	}
+	
+	public List<RestaurantRecommendMenuVO> getMenuList(int i_rest) {
+		return dao.selMenuList(i_rest);
 	}
 	
 	public int delRecMenu(RestaurantRecommendMenuVO param) {
 		return dao.delRecommendMenu(param);
 	}
-	
 	}
