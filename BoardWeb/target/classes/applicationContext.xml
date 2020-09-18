@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	
+	<context:component-scan base-package="polymorphism"></context:component-scan>
+	
+	<bean class="polymorphism.AppleSpeaker" />
+	
+	<!-- 
+	<bean id="tv" class="ploymorphism.SamsungTV">		-->	<!-- bean등록을 하게되면 객체화를 자동으로 해둠 (lazy-init="ture" 를 주면 미리 안해두고 사용하기 직전에 객체화를 함)-->
+																																				<!-- 객체화를 해두고 필요할때 주소값만 넘겨줌 (싱글톤) -->
+																																				<!-- scope="prototype" 쓰면 쓸때마다 객체화를 함. 서로 다른 주소값. -->
+		<!--  	<constructor-arg ref="apple"/>		-->					<!-- constructor-arg가 없으면 무조건 기본생성자. 이걸 써주면 tmax를 참조해서 매개변수로 생성자에 넣어줌. (생성자 매개변수랑 갯수,타입 맞춰줘야함)-->
+		<!--<constructor-arg value="5"/>	-->							<!-- value: 정수값 -->  
+		
+<!--  	<property name="speaker" ref="appleSpeaker"/>		-->			<!-- setter를 통해서 값을 넣는 방법 -->
+<!-- 	</bean>					
+
+	<bean id="tmaxSpeaker" class="ploymorphism.TmaxSpeaker" lazy-init="true"/>
+	<bean id="appleSpeaker" class="ploymorphism.AppleSpeaker" lazy-init="true"/>
+	<bean id="col" class="ploymorphism.CollectionBean">
+		<property name="addressList">
+			<list>
+				<value>서울</value>
+				<value>대전</value>
+				<value>대구</value>
+				<value>부산</value>
+			</list>
+		</property>
+	</bean> -->
+</beans>
