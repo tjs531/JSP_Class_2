@@ -12,7 +12,7 @@
 	<bean class="polymorphism.AppleSpeaker" />
 	
 	<!-- 
-	<bean id="tv" class="ploymorphism.SamsungTV">		-->	<!-- bean등록을 하게되면 객체화를 자동으로 해둠 (lazy-init="ture" 를 주면 미리 안해두고 사용하기 직전에 객체화를 함)-->
+	<bean id="tv" class="ploymorphism.Sa msungTV">		-->	<!-- bean등록을 하게되면 객체화를 자동으로 해둠 (lazy-init="ture" 를 주면 미리 안해두고 사용하기 직전에 객체화를 함)-->
 																																				<!-- 객체화를 해두고 필요할때 주소값만 넘겨줌 (싱글톤) -->
 																																				<!-- scope="prototype" 쓰면 쓸때마다 객체화를 함. 서로 다른 주소값. -->
 		<!--  	<constructor-arg ref="apple"/>		-->					<!-- constructor-arg가 없으면 무조건 기본생성자. 이걸 써주면 tmax를 참조해서 매개변수로 생성자에 넣어줌. (생성자 매개변수랑 갯수,타입 맞춰줘야함)-->

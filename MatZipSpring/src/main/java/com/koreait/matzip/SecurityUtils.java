@@ -18,16 +18,15 @@ public class SecurityUtils {
 		return (UserVO)hs.getAttribute(Const.LOGIN_USER);
 	}
 	
-	public static boolean isLogout(HttpServletRequest request ) {
-		return getLoginUser(request) == null ;
+	public static boolean isLogout(HttpServletRequest request) {				
+		return getLoginUser(request) == null;
 	}
 	
-	public static String generateSlat() {
+	public static String generateSalt() {
 		return BCrypt.gensalt();
 	}
-	
-	public static String getEncrypt(String pw, String salt) {
-		return BCrypt.hashpw(pw,  salt);
-	}
 
+	public static String getEncrypt(String pw, String salt) {
+		return BCrypt.hashpw(pw, salt); 
+	}
 }

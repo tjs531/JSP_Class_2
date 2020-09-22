@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.koreait.matzip.user.UserMapper">
 	<insert id="insUser" parameterType="UserVO">
 		INSERT INTO t_user
 		(user_id, user_pw, salt, nm)
-		VALUES 
+		VALUES
 		(#{user_id}, #{user_pw}, #{salt}, #{nm})
-	</insert> 
+	</insert>
 	
-	<select id="selUser" parameterType="UserDTO" resultType="UserDMI">
+	<select id="selUser" parameterType="UserPARAM" resultType="UserDMI">
 		SELECT i_user, user_id, user_pw, salt, nm, profile_img, r_dt
 		FROM t_user
 		WHERE 

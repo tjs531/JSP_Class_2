@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -14,7 +14,7 @@
 				</div>
 				<div class="info">
 					<div class="nm">${item.menu_nm}</div>
-					<div class="price"><fmt:formatNumber type="number" value="${item.menu_price}"/>¿ø</div>
+					<div class="price"><fmt:formatNumber type="number" value="${item.menu_price}"/>ì›</div>
 				</div>
 				<c:if test="${loginUser.i_user == data.i_user}">
 					<div class="delIconContainer" onclick="delRecMenu(${item.seq})">
@@ -27,24 +27,24 @@
 	<div id="sectionContainerCenter">
 		<div>
 			<c:if test="${loginUser.i_user == data.i_user}">
-				<button onclick="isDel()">°¡°Ô »èÁ¦</button>
+				<button onclick="isDel()">ê°€ê²Œ ì‚­ì œ</button>
 				
-				<h2>- ÃßÃµ ¸Ş´º -</h2>
+				<h2>- ì¶”ì²œ ë©”ë‰´ -</h2>
 				<div>
-					<div><button type="button" onclick="addRecMenu()">ÃßÃµ ¸Ş´º Ãß°¡</button></div>
+					<div><button type="button" onclick="addRecMenu()">ì¶”ì²œ ë©”ë‰´ ì¶”ê°€</button></div>
 					<form id="recFrm" action="/restaurant/addRecMenusProc" enctype="multipart/form-data" method="post">
 						<input type="hidden" name="i_rest" value="${data.i_rest}">
 						<div id="recItem"></div>
-						<div><input type="submit" value="µî·Ï"></div>
+						<div><input type="submit" value="ë“±ë¡"></div>
 					</form>
 				</div>
 				
-				<h2>- ¸Ş´º -</h2>
+				<h2>- ë©”ë‰´ -</h2>
 				<div>
 					<form id="menuFrm" action="/restaurant/addMenusProc" enctype="multipart/form-data" method="post">
 						<input type="hidden" name="i_rest" value="${data.i_rest}">
 						<input type="file" name="menu_pic" multiple>
-						<div><input type="submit" value="µî·Ï"></div>
+						<div><input type="submit" value="ë“±ë¡"></div>
 					</form>
 				</div>
 			</c:if>
@@ -52,9 +52,7 @@
 			<div class="restaurant-detail">
 				<div id="detail-header">
 					<div class="restaurant_title_wrap">
-						<span class="title">
-							<h1 class="restaurant_name">${data.nm}</h1>						
-						</span>
+						<h1 class="restaurant_name">${data.nm}</h1>
 					</div>
 					<div class="status branch_none">
 						<span class="cnt hit">${data.cntHits}</span>					
@@ -63,25 +61,27 @@
 				</div>
 				<div>
 					<table>
-						<caption>·¹½ºÅä¶û »ó¼¼ Á¤º¸</caption>
+						<caption>ë ˆìŠ¤í† ë‘ ìƒì„¸ ì •ë³´</caption>
 						<tbody>
 							<tr>
-								<th>ÁÖ¼Ò</th>
+								<th>ì£¼ì†Œ</th>
 								<td>${data.addr}</td>
 							</tr>
 							<tr>
-								<th>Ä«Å×°í¸®</th>
+								<th>ì¹´í…Œê³ ë¦¬</th>
 								<td>${data.cd_category_nm}</td>
 							</tr>
 							<tr>
-								<th>¸Ş´º</th>
+								<th>ë©”ë‰´</th>
 								<td>	
 									<div class="menuList">
-										<c:forEach var="i" begin="0" end="${fn:length(menuList) > 3 ? 2 : fn:length(menuList)}">
-											<div class="menuItem">
-												<img src="/res/img/restaurant/${data.i_rest}/menu/${menuList[i].menu_pic}">
-											</div>
-										</c:forEach>
+										<c:if test="${fn:length(menuList) > 0}">
+											<c:forEach var="i" begin="0" end="${fn:length(menuList) > 3 ? 2 : fn:length(menuList) - 1}">
+												<div class="menuItem">
+													<img src="/res/img/restaurant/${data.i_rest}/menu/${menuList[i].menu_pic}">
+												</div>
+											</c:forEach>
+										</c:if>
 										<c:if test="${fn:length(menuList) > 3}">
 											<div class="menuItem bg_black">
 												<div class="moreCnt">
@@ -102,12 +102,12 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 	function delRecMenu(seq) {
-		if(!confirm('»èÁ¦ÇÏ½Ã°Ú½À´Ï±î?')) {
+		if(!confirm('ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) {
 			return
 		}	
 		console.log('seq : ' + seq)
 		
-		axios.get('/restaurant/ajaxDelRecMenu', {
+		axios.get('/rest/ajaxDelRecMenu', {
 			params: {
 				i_rest: ${data.i_rest},
 				seq: seq
@@ -115,7 +115,7 @@
 		}).then(function(res) {
 			console.log(res)
 			if(res.data == 1) {
-				//¿¤¸®¸ÕÆ® »èÁ¦
+				//ì—˜ë¦¬ë¨¼íŠ¸ ì‚­ì œ
 				var ele = document.querySelector('#recMenuItem_' + seq)
 				ele.remove()
 			}
@@ -135,19 +135,19 @@
 		inputPic.setAttribute('type', 'file')
 		inputPic.setAttribute('name', 'menu_pic_' + idx++)
 		
-		div.append('¸Ş´º: ')
+		div.append('ë©”ë‰´: ')
 		div.append(inputNm)
-		div.append(' °¡°İ: ')
+		div.append(' ê°€ê²©: ')
 		div.append(inputPrice)
-		div.append(' »çÁø: ')
+		div.append(' ì‚¬ì§„: ')
 		div.append(inputPic)
 		
 		recItem.append(div)
 	}
 	addRecMenu()
 	function isDel() {
-		if(confirm('»èÁ¦ ÇÏ½Ã°Ú½À´Ï±î?')) {
-			location.href = '/restaurant/restDel?i_rest=${data.i_rest}'
+		if(confirm('ì‚­ì œ í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) {
+			location.href = '/rest/restDel?i_rest=${data.i_rest}'
 		}
 	}
 </script>
