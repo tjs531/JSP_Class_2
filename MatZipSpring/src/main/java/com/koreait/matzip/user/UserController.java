@@ -26,6 +26,13 @@ public class UserController {
 	@Autowired
 	private UserService service;
 	
+	@RequestMapping(value="/logout", method = RequestMethod.GET)
+	public String logout(HttpSession hs) {
+		hs.invalidate();
+		return "redirect:/";
+	}
+	
+	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(Model model) {
 		model.addAttribute(Const.TITLE, "·Î±×ÀÎ");

@@ -55,8 +55,8 @@
 						<h1 class="restaurant_name">${data.nm}</h1>
 					</div>
 					<div class="status branch_none">
-						<span class="cnt hit">${data.cntHits}</span>					
-						<span class="cnt favorite">${data.cntFavorite}</span>
+						<span class="cnt hit">${data.hits}</span>					
+						<span class="cnt favorite">${data.cnt_favorite}</span>
 					</div>
 				</div>
 				<div>

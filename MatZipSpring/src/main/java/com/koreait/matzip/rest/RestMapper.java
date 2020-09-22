@@ -8,5 +8,7 @@ import com.koreait.matzip.rest.model.RestPARAM;
 
 @Mapper
 public interface RestMapper {
+	int insRest(RestPARAM param);
 	public List<RestDMI> selRestList(RestPARAM param);
+	public RestDMI selRest(RestPARAM param);
 }

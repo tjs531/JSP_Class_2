@@ -9,7 +9,6 @@ public class RestaurantRecommendMenuVO {
 	private int i_user;
 	
 	
-	
 	public int getI_user() {
 		return i_user;
 	}
