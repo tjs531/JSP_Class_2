@@ -5,11 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <div>
 	<div class="recMenuContainer">
-		<c:forEach items="${recommendMenuList}" var="item">
+		<c:forEach items="${recMenuList}" var="item">
 			<div class="recMenuItem" id="recMenuItem_${item.seq}">
 				<div class="pic">
 					<c:if test="${item.menu_pic != null and item.menu_pic != ''}">
-						<img src="/res/img/restaurant/${data.i_rest}/${item.menu_pic}">
+						<img src="/res/img/rest/${data.i_rest}/rec_menu/${item.menu_pic}">
 					</c:if>
 				</div>
 				<div class="info">
@@ -32,7 +32,7 @@
 				<h2>- 추천 메뉴 -</h2>
 				<div>
 					<div><button type="button" onclick="addRecMenu()">추천 메뉴 추가</button></div>
-					<form id="recFrm" action="/restaurant/addRecMenusProc" enctype="multipart/form-data" method="post">
+					<form id="recFrm" action="/rest/recMenus" enctype="multipart/form-data" method="post">
 						<input type="hidden" name="i_rest" value="${data.i_rest}">
 						<div id="recItem"></div>
 						<div><input type="submit" value="등록"></div>
@@ -70,6 +70,10 @@
 							<tr>
 								<th>카테고리</th>
 								<td>${data.cd_category_nm}</td>
+							</tr>
+							<tr>
+								<th>작성자</th>
+								<td>${data.user_nm}</td>
 							</tr>
 							<tr>
 								<th>메뉴</th>
@@ -133,7 +137,7 @@
 		inputPrice.setAttribute('name', 'menu_price')
 		var inputPic = document.createElement('input')
 		inputPic.setAttribute('type', 'file')
-		inputPic.setAttribute('name', 'menu_pic_' + idx++)
+		inputPic.setAttribute('name', 'menu_pic')
 		
 		div.append('메뉴: ')
 		div.append(inputNm)
@@ -147,7 +151,7 @@
 	addRecMenu()
 	function isDel() {
 		if(confirm('삭제 하시겠습니까?')) {
-			location.href = '/rest/restDel?i_rest=${data.i_rest}'
+			location.href = '/rest/del?i_rest=${data.i_rest}'
 		}
 	}
 </script>
