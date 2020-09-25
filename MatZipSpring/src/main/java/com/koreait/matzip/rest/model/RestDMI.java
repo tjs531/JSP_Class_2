@@ -5,7 +5,6 @@ public class RestDMI extends RestVO {
 	private String user_nm;
 	private int cnt_favorite;
 	
-	
 	public String getCd_category_nm() {
 		return cd_category_nm;
 	}
@@ -24,5 +23,4 @@ public class RestDMI extends RestVO {
 	public void setCnt_favorite(int cnt_favorite) {
 		this.cnt_favorite = cnt_favorite;
 	}
-
 }

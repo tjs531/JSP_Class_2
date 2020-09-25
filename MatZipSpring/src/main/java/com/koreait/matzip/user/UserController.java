@@ -1,7 +1,5 @@
 package com.koreait.matzip.user;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.koreait.matzip.Const;
@@ -32,9 +31,9 @@ public class UserController {
 		return "redirect:/";
 	}
 	
-	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(Model model) {
+		System.out.println("Controller - login");
 		model.addAttribute(Const.TITLE, "·Î±×ÀÎ");
 		model.addAttribute(Const.VIEW, "user/login");
 		return ViewRef.TEMP_DEFAULT;
@@ -46,7 +45,7 @@ public class UserController {
 		
 		if(result == Const.SUCCESS) {
 			hs.setAttribute(Const.LOGIN_USER, param);
-			return "redirect:/rest/map";
+			return "redirect:/";
 		}
 		
 		String msg = null;
@@ -93,5 +92,3 @@ public class UserController {
 		return String.valueOf(result);
 	}
 }
-
-

@@ -17,6 +17,7 @@ import com.koreait.matzip.Const;
 import com.koreait.matzip.SecurityUtils;
 import com.koreait.matzip.ViewRef;
 import com.koreait.matzip.rest.model.RestDMI;
+import com.koreait.matzip.rest.model.RestFile;
 import com.koreait.matzip.rest.model.RestPARAM;
 import com.koreait.matzip.rest.model.RestRecMenuVO;
 
@@ -65,13 +66,20 @@ public class RestController {
 	public String detail(RestPARAM param, Model model) {
 		RestDMI data = service.selRest(param);
 		
-		model.addAttribute("recMenuList", service.selRestRecMenu(param));
-		
-		model.addAttribute("css", new String[]{"restDetail"});
+		//model.addAttribute("menuList", service.selRestMenus(param));
+		model.addAttribute("recMenuList", service.selRestRecMenus(param));
 		model.addAttribute("data", data);
+		
+		model.addAttribute("css", new String[]{"restDetail", "swiper-bundle.min"});
 		model.addAttribute(Const.TITLE, data.getNm()); //가게명
 		model.addAttribute(Const.VIEW, "rest/restDetail");
 		return ViewRef.TEMP_MENU_TEMP;
+	}
+	
+	@RequestMapping("/ajaxSelMenuList")
+	@ResponseBody 
+	public List<RestRecMenuVO> ajaxSelMenuList(RestPARAM param) {
+		return service.selRestMenus(param);
 	}
 	
 	@RequestMapping("/del")
@@ -99,9 +107,26 @@ public class RestController {
 	
 	@RequestMapping("/ajaxDelRecMenu")
 	@ResponseBody public int ajaxDelRecMenu(RestPARAM param, HttpSession hs) {		
+		System.out.println("넘어왔나요????");
 		String path = "/resources/img/rest/" + param.getI_rest() + "/rec_menu/";
 		String realPath = hs.getServletContext().getRealPath(path);
 		param.setI_user(SecurityUtils.getLoginUserPk(hs)); //로긴 유저pk담기
-		return service.delRecMenu(param, realPath);
+		return service.delRestRecMenu(param, realPath);
 	}	
+	
+	@RequestMapping("/ajaxDelMenu")
+	@ResponseBody public int ajaxDelMenu(RestPARAM param) {	 //i_rest, seq, menu_pic
+		return service.delRestMenu(param);
+	}
+	
+	@RequestMapping("/menus")
+	public String menus(RestFile param
+			, HttpSession hs
+			, RedirectAttributes ra) {
+		
+		int i_user = SecurityUtils.getLoginUserPk(hs);
+		int result = service.insRestMenu(param, i_user);
+		ra.addAttribute("i_rest", param.getI_rest());
+		return "redirect:/rest/detail";
+	}
 }

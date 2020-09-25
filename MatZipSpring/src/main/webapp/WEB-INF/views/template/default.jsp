@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="/res/css/common.css">
-<title>${title }</title>
+<title>${title}</title>
 </head>
 <body>
 	<div id="container">
