@@ -3,7 +3,9 @@ package com.koreait.matzip.rest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,46 +27,62 @@ import com.koreait.matzip.rest.model.RestRecMenuVO;
 @Service
 public class RestService {
 
-	@Autowired
-	private RestMapper mapper;
+   @Autowired
+   private RestMapper mapper;
 
-	@Autowired
-	private CommonMapper cMapper;
+   @Autowired
+   private CommonMapper cMapper;
 
-	public List<RestDMI> selRestList(RestPARAM param) {
-		return mapper.selRestList(param);
-	}
-	
-	public List<RestRecMenuVO> selRestMenus(RestPARAM param) {
-		return mapper.selRestMenus(param);
-	}
-	
-	public List<RestRecMenuVO> selRestRecMenus(RestPARAM param) {		
-		return mapper.selRestRecMenus(param);
-	}
+   public List<RestDMI> selRestList(RestPARAM param) {
+      return mapper.selRestList(param);
+   }
+   
+   public List<RestRecMenuVO> selRestMenus(RestPARAM param) {
+      return mapper.selRestMenus(param);
+   }
+   
+   public List<RestRecMenuVO> selRestRecMenus(RestPARAM param) {      
+      return mapper.selRestRecMenus(param);
+   }
 
-	public List<CodeVO> selCategoryList() {
-		CodeVO p = new CodeVO();
-		p.setI_m(1); // 음식점 카테고리 코드 = 1
-		return cMapper.selCodeList(p);
-	}
+   public List<CodeVO> selCategoryList() {
+      CodeVO p = new CodeVO();
+      p.setI_m(1); // 음식점 카테고리 코드 = 1
+      return cMapper.selCodeList(p);
+   }
 
-	public int insRest(RestPARAM param) {
-		return mapper.insRest(param);
-	}
+   public int insRest(RestPARAM param) {
+      return mapper.insRest(param);
+   }
+   
+   public void addHits(RestPARAM param, HttpServletRequest req) {
+      String myIp = req.getRemoteAddr();
+      ServletContext ctx = req.getServletContext();
+      
+      int i_user = SecurityUtils.getLoginUserPk(req);
+      
+      String currentRestReadIp = (String)ctx.getAttribute(Const.CURRENT_REST_READ_IP + param.getI_rest());
+      if(currentRestReadIp == null || !currentRestReadIp.equals(myIp)) {
+         
+         param.setI_user(i_user); //내가 쓴 글이면 조회수 안 올라가게 쿼리문으로 막는다
+         //조회수 올림 처리 할꺼임
+         mapper.updAddHits(param);
+         ctx.setAttribute(Const.CURRENT_REST_READ_IP + param.getI_rest(), myIp);
+      }
+   }
 
-	public RestDMI selRest(RestPARAM param) {
-		return mapper.selRest(param);
-	}
+   public RestDMI selRest(RestPARAM param) {
+      return mapper.selRest(param);
+   }
 
-	@Transactional
-	public void delRestTran(RestPARAM param) {
-		mapper.delRestRecMenu(param);
-		mapper.delRestMenu(param);
-		mapper.delRest(param);
-	}
-		
-	public int insRecMenus(MultipartHttpServletRequest mReq) {
+   @Transactional
+   public void delRestTran(RestPARAM param) {
+      mapper.delRestRecMenu(param);
+      mapper.delRestMenu(param);
+      mapper.delRest(param);
+   }
+      
+   public int insRecMenus(MultipartHttpServletRequest mReq) {
 		int i_user = SecurityUtils.getLoginUserPk(mReq.getSession());		
 		int i_rest = Integer.parseInt(mReq.getParameter("i_rest"));
 		if(_authFail(i_rest, i_user)) {
@@ -103,42 +121,42 @@ public class RestService {
 		
 		return i_rest;
 	}
-	
-	public int delRestRecMenu(RestPARAM param, String realPath) {		
-		//파일 삭제
-		List<RestRecMenuVO> list = mapper.selRestRecMenus(param);
-		if(list.size() == 1) {
-			RestRecMenuVO item = list.get(0);		
-			
-			if(item.getMenu_pic() != null && !"".equals(item.getMenu_pic())) { //이미지 있음 > 삭제!!
-				File file = new File(realPath + item.getMenu_pic());
-				if(file.exists()) {
-					if(file.delete()) {
-						return mapper.delRestRecMenu(param);
-					} else {
-						return 0;
-					}
-				}
-			}
-		}		
-		return mapper.delRestRecMenu(param);
-	}
-	
-	public int delRestMenu(RestPARAM param) {
-		if(param.getMenu_pic() != null && !"".equals(param.getMenu_pic())) {
-			String path = Const.realPath + "/resources/img/rest/" + param.getI_rest() + "/menu/";
-			
-			if(FileUtils.delFile(path + param.getMenu_pic())) {
-				return mapper.delRestMenu(param);		
-			} else {
-				return Const.FAIL;
-			}
-		}
-		return mapper.delRestMenu(param);
-	}
-	
-	
-	public int insRestMenu(RestFile param, int i_user) {		
+   
+   public int delRestRecMenu(RestPARAM param, String realPath) {      
+      //파일 삭제
+      List<RestRecMenuVO> list = mapper.selRestRecMenus(param);
+      if(list.size() == 1) {
+         RestRecMenuVO item = list.get(0);      
+         
+         if(item.getMenu_pic() != null && !"".equals(item.getMenu_pic())) { //이미지 있음 > 삭제!!
+            File file = new File(realPath + item.getMenu_pic());
+            if(file.exists()) {
+               if(file.delete()) {
+                  return mapper.delRestRecMenu(param);
+               } else {
+                  return 0;
+               }
+            }
+         }
+      }      
+      return mapper.delRestRecMenu(param);
+   }
+   
+   public int delRestMenu(RestPARAM param) {
+      if(param.getMenu_pic() != null && !"".equals(param.getMenu_pic())) {
+         String path = Const.realPath + "/resources/img/rest/" + param.getI_rest() + "/menu/";
+         
+         if(FileUtils.delFile(path + param.getMenu_pic())) {
+            return mapper.delRestMenu(param);      
+         } else {
+            return Const.FAIL;
+         }
+      }
+      return mapper.delRestMenu(param);
+   }
+   
+   
+   public int insRestMenu(RestFile param, int i_user) {		
 		if(_authFail(param.getI_rest(), i_user)) {
 			return Const.FAIL;
 		}
@@ -161,16 +179,16 @@ public class RestService {
 		}		
 		return Const.SUCCESS;
 	}
-	
-	private boolean _authFail(int i_rest, int i_user) {
-		RestPARAM param = new RestPARAM();
-		param.setI_rest(i_rest);		
-		int dbI_user = mapper.selRestChkUser(i_rest);
-		if(i_user != dbI_user) {
-			return true;
-		}		
-		return false;
-	}
-	
-	
+   
+   private boolean _authFail(int i_rest, int i_user) {
+      RestPARAM param = new RestPARAM();
+      param.setI_rest(i_rest);      
+      int dbI_user = mapper.selRestChkUser(i_rest);
+      if(i_user != dbI_user) {
+         return true;
+      }      
+      return false;
+   }
+   
+   
 }

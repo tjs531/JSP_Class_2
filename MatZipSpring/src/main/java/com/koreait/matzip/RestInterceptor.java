@@ -31,7 +31,7 @@ public class RestInterceptor extends HandlerInterceptorAdapter {
 				if(i_rest == 0) {
 					return false;
 				}
-				int i_user = SecurityUtils.getLoginUserPk(request);
+				int i_user = SecurityUtils.getLoginUserPk(request); //로그인한 사람의 i_user
 				
 				boolean result = _authSuccess(i_rest, i_user);
 				System.out.println("=== auth result : " + result);
@@ -45,5 +45,4 @@ public class RestInterceptor extends HandlerInterceptorAdapter {
 	private boolean _authSuccess(int i_rest, int i_user) {
 		return i_user == mapper.selRestChkUser(i_rest);
 	}
-
 }
